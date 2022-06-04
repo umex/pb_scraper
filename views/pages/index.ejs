@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        table {
+            border-spacing: 30px;
+        }
+      </style>
+</head>
+<body>
+    <div>
+        <table>
+            <tr>
+              <th>Date</th>
+              <th>Base value</th>
+              <th>Daily return</th>
+              <th>Daily percentage</th>
+              <th>ROI</th>
+            </tr>
+            <% values.forEach(function(value) { %>
+                <tr>
+                    <td><%= (value.date).split('T')[0] %></td>
+                    <td><%= value.base_value %></td>
+                    <% if(value.daily_return > 0){ %>
+                        <td style="color:rgb(5, 158, 5)"><%= value.daily_return %></td>
+                    <% } else if(value.daily_return < 0){ %>
+                        <td style="color:red"><%= value.daily_return %></td>
+                    <% } else{ %>  
+                        <td><%= value.daily_return %></td>
+                    <% } %>
+                    <td><%= value.daily_percentage %>%</td>
+                    <td><%= value.ROI %>%</td>
+                </tr>
+            <% }); %>
+
+          </table>
+    </div>
+</body>
+</html>
