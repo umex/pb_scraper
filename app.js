@@ -1,6 +1,7 @@
-import express from "express";
-import schedule  from "node-schedule";
-import helper from "./helper.js";
+const express = require('express');
+const schedule = require('node-schedule');
+const helper = require('./helper.js');
+
 
 const app = express();	
 const port = 3000;
@@ -8,19 +9,12 @@ const port = 3000;
 
 app.set('view engine', 'ejs');
 
-var connection;
-
 schedule.scheduleJob('0 0 6 * * *',async function(){
     let date = new Date();
     if(date.getDay() != 0 && date.getDate() != 6){
         helper.initTable();
         helper.saveData();
     }
-});
-
-
-app.get("/", (req, res) => {
-  res.send("Hello World!");
 });
 
 

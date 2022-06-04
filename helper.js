@@ -1,7 +1,8 @@
-import mysql from "mysql";
-import util from 'util';
-import fetch from "node-fetch";
-import { JSDOM } from  "jsdom";
+const mysql = require('mysql');
+const util = require('util');
+const fetch = require('node-fetch');
+const { JSDOM } = require('jsdom');
+
 
 var connection;
 
@@ -12,7 +13,7 @@ const dbUser = process.env.DB_USER;
 const dbPassword = process.env.DB_PASSWORD;
 const database = process.env.DATABASE;
 
-const startingValue = process.env.STARTING_VALUE;
+const startingValue = parseInt(process.env.STARTING_VALUE);
 
 
 
@@ -27,7 +28,7 @@ function createConnection(){
 
 async function showData(){
     createConnection();
-    let tableExistsSQL = "SELECT * FROM dobrez_db_test.trading_data";
+    let tableExistsSQL = `SELECT * FROM ${database}.trading_data`;
     let fn = util.promisify(connection.query).bind(connection);
     let values = await fn(tableExistsSQL);
     connection.end();
@@ -38,7 +39,7 @@ async function showData(){
 
 async function saveData(){
     createConnection();
-    let tableExistsSQL = "SELECT * FROM dobrez_db_test.trading_data ORDER BY id LIMIT 1";
+    let tableExistsSQL = `SELECT * FROM ${database}.trading_data ORDER BY id LIMIT 1`;
     let fn = util.promisify(connection.query).bind(connection);
     let values = await fn(tableExistsSQL);
     
@@ -66,7 +67,7 @@ async function saveData(){
 
 async function initTable(){
     createConnection();
-    let tableExistsSQL = "SELECT COUNT(*) as count FROM information_schema.tables WHERE table_schema = 'dobrez_db_test' AND table_name = 'trading_data' LIMIT 1";
+    let tableExistsSQL = `SELECT COUNT(*) as count FROM information_schema.tables WHERE table_schema = '${database}' AND table_name = 'trading_data' LIMIT 1`;
     let fn = util.promisify(connection.query).bind(connection);
     let rows = await fn(tableExistsSQL);
     rows = JSON.parse(JSON.stringify(rows[0]))
@@ -149,4 +150,4 @@ function parseCookies(response) {
 	}).join(';');
 }
 
-export default {saveData, showData, initTable, getLatestValue};
+module.exports = {saveData, showData, initTable, getLatestValue};
