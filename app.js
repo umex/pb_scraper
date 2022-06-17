@@ -9,18 +9,23 @@ const port = 3000;
 
 app.set('view engine', 'ejs');
 
-schedule.scheduleJob('0 0 6 * * *',async function(){
+schedule.scheduleJob('0 4 * * *',async function(){
     let date = new Date();
-    if(date.getDay() != 0 && date.getDate() != 6){
-        helper.initTable();
-        helper.saveData();
+    if(date.getDay() != 0 && date.getDate() != 1){
+        await helper.initTable();
+        await helper.saveData();
     }
 });
 
 
 app.get("/date", (req, res) => {
     let test = new Date();
-    res.send("done")
+    res.send(test.getDay().toString())
+});
+
+app.get("/saveData", async (req, res) => {
+    let result = await helper.saveData();
+    res.send(result)
 });
 
 app.get("/showData", async (req, res) => {

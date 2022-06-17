@@ -39,7 +39,7 @@ async function showData(){
 
 async function saveData(){
     createConnection();
-    let tableExistsSQL = `SELECT * FROM ${database}.trading_data ORDER BY id LIMIT 1`;
+    let tableExistsSQL = `SELECT * FROM ${database}.trading_data ORDER BY id DESC LIMIT 1`;
     let fn = util.promisify(connection.query).bind(connection);
     let values = await fn(tableExistsSQL);
     
@@ -48,16 +48,16 @@ async function saveData(){
         let daily_return = 0;
         let daily_percentage = 0;
         let ROI = ((base_value - startingValue) / startingValue) * 100;
-        var sql = `INSERT INTO trading_data ( date, base_value, daily_return, daily_percentage, ROI) VALUES ( NOW(), ${base_value}, ${daily_return}, ${daily_percentage}, ${ROI})`;
+        var sql = `INSERT INTO trading_data ( date, base_value, daily_return, daily_percentage, ROI) VALUES ( NOW() + INTERVAL 1 DAY, ${base_value}, ${daily_return}, ${daily_percentage}, ${ROI})`;
         let resp = await fn(sql);
         connection.end();
         return resp
     }else{
         let base_value = await getLatestValue();
         let daily_return = base_value - values[0].base_value;
-        let daily_percentage = (diff / base_value) * 100;
+        let daily_percentage = (daily_return / base_value) * 100;
         let ROI = ((base_value - startingValue) / startingValue) * 100;
-        var sql = `INSERT INTO trading_data ( date, base_value, daily_return, daily_percentage, ROI) VALUES ( NOW(), ${base_value}, ${daily_return}, ${daily_percentage}, ${ROI})`;
+        var sql = `INSERT INTO trading_data ( date, base_value, daily_return, daily_percentage, ROI) VALUES ( NOW() + INTERVAL 1 DAY, ${base_value}, ${daily_return}, ${daily_percentage}, ${ROI})`;
         let resp = await fn(sql);
         connection.end();
         return resp
