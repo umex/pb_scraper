@@ -2,6 +2,7 @@ const mysql = require('mysql');
 const util = require('util');
 const fetch = require('node-fetch');
 const { JSDOM } = require('jsdom');
+const fs = require('fs');
 
 
 var connection;
@@ -150,4 +151,16 @@ function parseCookies(response) {
 	}).join(';');
 }
 
-module.exports = {saveData, showData, initTable, getLatestValue};
+async function  saveSchedulerData(isOn){
+    let counterExists = fs.existsSync('./resources/logs/scheduler.txt');
+    let date = new Date().toLocaleDateString('en-GB');
+    let text = "\n" + date+" -> scheduler condition:"+  + isOn == true ? "Valid" : "Invalid" 
+
+    if (counterExists) {
+        fs.appendFileSync('./resources/logs/scheduler.txt', text);  
+    }else{
+        fs.writeFileSync('./resources/logs/scheduler.txt', text);  
+    }
+}
+
+module.exports = {saveData, showData, initTable, getLatestValue, saveSchedulerData};
